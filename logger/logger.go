@@ -2,7 +2,7 @@ package logger
 
 import (
 	"fmt"
-	"lemon-robot-golang-commons/utils/date"
+	"lemon-robot-golang-commons/utils/lrudate"
 )
 
 func Debug(msg string) {
@@ -28,5 +28,5 @@ var logTypeList = []string{"DEBG", "WARN", "ERRO", "INFO"}
 var logColorList = []int{0, 33, 31, 36}
 
 func log(msg string, logType int) {
-	fmt.Printf("%c[1;0;%dm[%s %s]%c[0m %s\n", 0x1B, logColorList[logType], logTypeList[logType], date.GetCurrentTimeFormatedStr(), 0x1B, msg)
+	fmt.Printf("%c[1;0;%dm[%s %s]%c[0m %s\n", 0x1B, logColorList[logType], logTypeList[logType], lrudate.GetCurrentTimeFormatedStr(), 0x1B, msg)
 }

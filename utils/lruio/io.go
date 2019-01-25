@@ -1,4 +1,4 @@
-package io
+package lruio
 
 import (
 	"encoding/json"
@@ -21,12 +21,15 @@ func PathExists(path string) bool {
 	return false
 }
 
-func CopyFile(src, dst string) error {
+func CopyFile(src string, dst string) error {
 	srcFile, errSrc := os.Open(src)
 	if errSrc != nil {
 		return errSrc
 	}
-	defer srcFile.Close()
+	return CopyFileFromReader(srcFile, dst)
+}
+
+func CopyFileFromReader(srcFile io.Reader, dst string) error {
 	dirPath, _ := path.Split(dst)
 	if !PathExists(dirPath) {
 		dstDirErr := os.MkdirAll(dirPath, os.ModePerm)
