@@ -1,6 +1,10 @@
 package lemonrobot
 
-import "fmt"
+import (
+	"fmt"
+	"lemon-robot-golang-commons/logger"
+	"runtime"
+)
 
 func PrintInfo(appName, appVersion string) {
 	fmt.Println(`
@@ -13,4 +17,6 @@ func PrintInfo(appName, appVersion string) {
 
 	`)
 	fmt.Printf("-- %c[0;0;32m%s - Version: %s - https://www.lemonit.cn%c[0m --\n\n", 0x1B, appName, appVersion, 0x1B)
+	logger.Info("SYSTEM ARCH: " + runtime.GOARCH)
+	logger.Info("SYSTEM OS: " + runtime.GOOS)
 }
