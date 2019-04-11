@@ -1,0 +1,29 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "wmiJbuFVCxg22zwXIeLsVCudyeY=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "c45f530f8e7fe40f4687eaa50d0c8c5f1b66f9e0",
+			"revisionTime": "2018-12-18T12:36:37Z"
+		},
+		{
+			"checksumSHA1": "4eelJOSLZoDzLuaJvgilOBVNovU=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"revisionTime": "2018-03-08T03:36:59Z"
+		},
+		{
+			"checksumSHA1": "Tutue3nEgM/87jitUcYv6ODwyNE=",
+			"path": "github.com/satori/go.uuid",
+			"revision": "b2ce2384e17bbe0c6d34077efa39dbab3e09123b",
+			"revisionTime": "2018-10-28T12:50:25Z"
+		},
+		{
+			"path": "google.golang.org/appengine/cloudsql",
+			"revision": ""
+		}
+	],
+	"rootPath": "lemon-robot-golang-commons"
+}
