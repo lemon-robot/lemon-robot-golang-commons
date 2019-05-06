@@ -77,3 +77,27 @@ func JsonToStruct(jsonSrc string, obj interface{}) error {
 	}
 	return nil
 }
+
+func GetRuntimePath(filename string) string {
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	return filepath.Join(dir, filename)
+}
+
+func ReplaceStrToFile(content, path string) error {
+	if PathExists(path) {
+		err := os.Remove(path)
+		if err != nil {
+			return err
+		}
+	}
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	_, wErr := file.WriteString(content)
+	if wErr != nil {
+		return wErr
+	}
+	return nil
+}
