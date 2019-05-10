@@ -1,4 +1,4 @@
-package lruhttp
+package lru_http
 
 import (
 	"bytes"
@@ -7,33 +7,36 @@ import (
 	"lemon-robot-golang-commons/logger"
 	"net/http"
 	"strings"
+	"sync"
 )
 
-var baseUrl = ""
-var commonHeader map[string]string
-
-func SetBaseUrl(url string) {
-	baseUrl = url
+type LRUHttp struct {
+	baseUrl      string
+	commonHeader map[string]string
 }
 
-func SetCommonHeader(header map[string]string) {
-	commonHeader = header
-}
+var instance *LRUHttp
+var once sync.Once
 
-func AppendCommonHeader(headerContent map[string]string) {
-	if commonHeader == nil {
-		commonHeader = headerContent
-	} else {
-		for key := range headerContent {
-			commonHeader[key] = headerContent[key]
+func GetInstance() *LRUHttp {
+	once.Do(func() {
+		instance = &LRUHttp{
+			commonHeader: make(map[string]string),
 		}
+	})
+	return instance
+}
+
+func (i *LRUHttp) AppendCommonHeader(headerContent map[string]string) {
+	for key := range headerContent {
+		i.commonHeader[key] = headerContent[key]
 	}
 }
 
-func RequestJson(method, reqUrl string, data interface{}, header map[string]string) (string, error) {
+func (i *LRUHttp) RequestJson(method, reqUrl string, data interface{}, header map[string]string) (string, error) {
 	url := reqUrl
 	if strings.Index(reqUrl, "http") < 0 {
-		url = baseUrl + reqUrl
+		url = i.baseUrl + reqUrl
 	}
 	jsonBytes, _ := json.Marshal(data)
 	request, newRequestErr := http.NewRequest(method, url, bytes.NewBuffer(jsonBytes))
@@ -42,8 +45,8 @@ func RequestJson(method, reqUrl string, data interface{}, header map[string]stri
 		return "", newRequestErr
 	}
 	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
-	for key := range commonHeader {
-		request.Header.Set(key, commonHeader[key])
+	for key := range i.commonHeader {
+		request.Header.Set(key, i.commonHeader[key])
 	}
 	for key := range header {
 		request.Header.Set(key, header[key])

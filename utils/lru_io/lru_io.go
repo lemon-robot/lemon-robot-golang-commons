@@ -1,4 +1,4 @@
-package lruio
+package lru_io
 
 import (
 	"encoding/json"
@@ -8,9 +8,23 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
-func PathExists(path string) bool {
+type LRUIO struct {
+}
+
+var instance *LRUIO
+var once sync.Once
+
+func GetInstance() *LRUIO {
+	once.Do(func() {
+		instance = &LRUIO{}
+	})
+	return instance
+}
+
+func (i *LRUIO) PathExists(path string) bool {
 	_, err := os.Stat(path)
 	if err == nil {
 		return true
@@ -21,17 +35,17 @@ func PathExists(path string) bool {
 	return false
 }
 
-func CopyFile(src string, dst string) error {
+func (i *LRUIO) CopyFile(src string, dst string) error {
 	srcFile, errSrc := os.Open(src)
 	if errSrc != nil {
 		return errSrc
 	}
-	return CopyFileFromReader(srcFile, dst)
+	return i.CopyFileFromReader(srcFile, dst)
 }
 
-func CopyFileFromReader(srcFile io.Reader, dst string) error {
+func (i *LRUIO) CopyFileFromReader(srcFile io.Reader, dst string) error {
 	dirPath, _ := path.Split(dst)
-	if !PathExists(dirPath) {
+	if !i.PathExists(dirPath) {
 		dstDirErr := os.MkdirAll(dirPath, os.ModePerm)
 		if dstDirErr != nil {
 			return dstDirErr
@@ -49,14 +63,14 @@ func CopyFileFromReader(srcFile io.Reader, dst string) error {
 	return nil
 }
 
-func CopyDir(src string, dest string) error {
+func (i *LRUIO) CopyDir(src string, dest string) error {
 	err := filepath.Walk(src, func(currentSrc string, f os.FileInfo, err error) error {
 		if f == nil {
 			return err
 		}
 		aimPath := strings.Replace(currentSrc, src, dest, 1)
 		if !f.IsDir() {
-			CopyFile(currentSrc, aimPath)
+			i.CopyFile(currentSrc, aimPath)
 		}
 		return nil
 	})
@@ -66,7 +80,7 @@ func CopyDir(src string, dest string) error {
 	return nil
 }
 
-func JsonToStruct(jsonSrc string, obj interface{}) error {
+func (i *LRUIO) JsonToStruct(jsonSrc string, obj interface{}) error {
 	data, readErr := ioutil.ReadFile(jsonSrc)
 	if readErr != nil {
 		return readErr
@@ -78,13 +92,13 @@ func JsonToStruct(jsonSrc string, obj interface{}) error {
 	return nil
 }
 
-func GetRuntimePath(filename string) string {
+func (i *LRUIO) GetRuntimePath(filename string) string {
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	return filepath.Join(dir, filename)
 }
 
-func ReplaceStrToFile(content, path string) error {
-	if PathExists(path) {
+func (i *LRUIO) ReplaceStrToFile(content, path string) error {
+	if i.PathExists(path) {
 		err := os.Remove(path)
 		if err != nil {
 			return err
