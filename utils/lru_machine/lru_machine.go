@@ -1,4 +1,4 @@
-package lrumachine
+package lru_machine
 
 import (
 	"encoding/json"
@@ -44,7 +44,7 @@ func (i *LRUMachine) initMachineSign() (string, error) {
 	machineSign := i.readMachineSignFromLocal()
 	if machineSign == "" {
 		logger.Info("Machine Sign does not exist locally, start generating...")
-		machineSign = lru_string.Uuid()
+		machineSign = lru_string.GetInstance().Uuid()
 		saveErr := i.saveMachineSignToLocal(machineSign)
 		if saveErr != nil {
 			return "", saveErr
@@ -59,12 +59,12 @@ func (i *LRUMachine) saveMachineSignToLocal(machineSign string) error {
 		Sign: machineSign,
 	}
 	jsonBytes, _ := json.Marshal(signObj)
-	return lru_io.ReplaceStrToFile(string(jsonBytes), lru_workspace.GetWorkspacePath(machineSignSaveFile))
+	return lru_io.GetInstance().ReplaceStrToFile(string(jsonBytes), lru_workspace.GetInstance().GetWorkspacePath(machineSignSaveFile))
 }
 
 func (i *LRUMachine) readMachineSignFromLocal() string {
 	signObj := model.LrMachineSign{}
-	err := lru_io.JsonToStruct(lru_workspace.GetWorkspacePath(machineSignSaveFile), &signObj)
+	err := lru_io.GetInstance().JsonToStruct(lru_workspace.GetInstance().GetWorkspacePath(machineSignSaveFile), &signObj)
 	if err != nil {
 		return ""
 	}

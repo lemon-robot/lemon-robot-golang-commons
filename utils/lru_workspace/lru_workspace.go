@@ -15,7 +15,7 @@ const workspaceDirName = "lr_workspace"
 var instance *LRUWorkspace
 var once sync.Once
 
-func (i *LRUWorkspace) GetInstance() *LRUWorkspace {
+func GetInstance() *LRUWorkspace {
 	once.Do(func() {
 		instance = &LRUWorkspace{}
 	})
