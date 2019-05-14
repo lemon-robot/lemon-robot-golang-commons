@@ -11,7 +11,7 @@ import (
 )
 
 type LRUHttp struct {
-	baseUrl      string
+	BaseUrl      string
 	commonHeader map[string]string
 }
 
@@ -36,7 +36,7 @@ func (i *LRUHttp) AppendCommonHeader(headerContent map[string]string) {
 func (i *LRUHttp) RequestJson(method, reqUrl string, data interface{}, header map[string]string) (string, error) {
 	url := reqUrl
 	if strings.Index(reqUrl, "http") < 0 {
-		url = i.baseUrl + reqUrl
+		url = i.BaseUrl + reqUrl
 	}
 	jsonBytes, _ := json.Marshal(data)
 	request, newRequestErr := http.NewRequest(method, url, bytes.NewBuffer(jsonBytes))
