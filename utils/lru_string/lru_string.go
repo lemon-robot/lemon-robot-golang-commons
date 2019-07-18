@@ -2,6 +2,7 @@ package lru_string
 
 import (
 	"github.com/satori/go.uuid"
+	"strings"
 	"sync"
 )
 
@@ -17,6 +18,9 @@ func GetInstance() *LRUString {
 	return instance
 }
 
-func (i *LRUString) Uuid() string {
+func (i *LRUString) Uuid(withoutLine bool) string {
+	if withoutLine {
+		return strings.ReplaceAll(uuid.Must(uuid.NewV4()).String(), "-", "")
+	}
 	return uuid.Must(uuid.NewV4()).String()
 }

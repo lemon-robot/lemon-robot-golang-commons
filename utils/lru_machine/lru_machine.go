@@ -44,7 +44,7 @@ func (i *LRUMachine) initMachineSign() (string, error) {
 	machineSign := i.readMachineSignFromLocal()
 	if machineSign == "" {
 		logger.Info("Machine Sign does not exist locally, start generating...")
-		machineSign = lru_string.GetInstance().Uuid()
+		machineSign = lru_string.GetInstance().Uuid(true)
 		saveErr := i.saveMachineSignToLocal(machineSign)
 		if saveErr != nil {
 			return "", saveErr
