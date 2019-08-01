@@ -25,7 +25,7 @@ func GetInstance() *LRUFile {
 
 func (i *LRUFile) SaveFileToTemporary(file multipart.File, handler *multipart.FileHeader) (error, string, string) {
     fileName := handler.Filename
-    out, err := os.Create(temporaryPath + fileName)
+    out, err := os.Create(temporaryPath + string(os.PathSeparator) + fileName)
     if err != nil {
         return err, "", ""
     }
@@ -34,7 +34,7 @@ func (i *LRUFile) SaveFileToTemporary(file multipart.File, handler *multipart.Fi
     if err != nil {
         return err, "", ""
     }
-    return nil, fileName, temporaryPath + fileName
+    return nil, fileName, temporaryPath + string(os.PathSeparator) + fileName
 }
 
 
