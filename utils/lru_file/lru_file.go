@@ -23,18 +23,22 @@ func GetInstance() *LRUFile {
     return instance
 }
 
-func (i *LRUFile) SaveFileToTemporary(file multipart.File, handler *multipart.FileHeader) (error, string, string) {
+func (i *LRUFile) SaveFileToTemporary(file multipart.File, handler *multipart.FileHeader) (string, string, os.FileInfo, error) {
     fileName := handler.Filename
     out, err := os.Create(temporaryPath + string(os.PathSeparator) + fileName)
     if err != nil {
-        return err, "", ""
+        return "", "", nil, err
     }
     defer out.Close()
     _, err = io.Copy(out, file)
     if err != nil {
-        return err, "", ""
+        return "", "", nil, err
     }
-    return nil, fileName, temporaryPath + string(os.PathSeparator) + fileName
+    fileInfo, err := os.Stat(temporaryPath + string(os.PathSeparator) + fileName)
+    if err != nil {
+        return "", "", nil, err
+    }
+    return fileName, temporaryPath + string(os.PathSeparator) + fileName, fileInfo, nil
 }
 
 
