@@ -1,7 +1,6 @@
 package lru_file
 
 import (
-    "io"
     "mime/multipart"
     "os"
     "sync"
@@ -14,7 +13,8 @@ type LRUFile struct {
 var instance *LRUFile
 var once sync.Once
 
-var temporaryPath = os.TempDir()
+//var temporaryPath = os.TempDir()
+var temporaryPath = "/home/zgy/Applications/golang/file_resource_oss"
 
 func GetInstance() *LRUFile {
     once.Do(func() {
@@ -30,16 +30,30 @@ func (i *LRUFile) SaveFileToTemporary(file multipart.File, handler *multipart.Fi
         return "", "", nil, err
     }
     defer out.Close()
-    _, err = io.Copy(out, file)
-    if err != nil {
-        return "", "", nil, err
+
+
+    buf := make([]byte, 102400)
+    for {
+        n, _ := file.Read(buf)
+        if n == 0 {
+            break
+        }
+        _, error := out.Write(buf[:n])
+        if error != nil {
+            return "", "", nil, error
+        }
     }
+    // 这个方法适合写入小文件, 因为方法内部会强制开辟一块和文件一样大小的内存
+    //_, err = io.Copy(out, file)
+
     fileInfo, err := os.Stat(temporaryPath + string(os.PathSeparator) + fileName)
     if err != nil {
-        return "", "", nil, err
+       return "", "", nil, err
     }
+
     return fileName, temporaryPath + string(os.PathSeparator) + fileName, fileInfo, nil
 }
+
 
 
 
