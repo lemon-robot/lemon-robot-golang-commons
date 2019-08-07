@@ -13,8 +13,7 @@ type LRUFile struct {
 var instance *LRUFile
 var once sync.Once
 
-//var temporaryPath = os.TempDir()
-var temporaryPath = "/home/zgy/Applications/golang/file_resource_oss"
+var temporaryPath = os.TempDir()
 
 func GetInstance() *LRUFile {
     once.Do(func() {
